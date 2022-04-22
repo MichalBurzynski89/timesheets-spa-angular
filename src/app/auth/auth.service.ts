@@ -5,14 +5,19 @@ import {
   ID_TOKEN,
   SCOPES,
 } from './auth0-variables';
-import { Auth0DecodedHash, WebAuth } from 'auth0-js';
+import {
+  Auth0DecodedHash,
+  Auth0Error,
+  Auth0UserProfile,
+  WebAuth,
+} from 'auth0-js';
 
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthService {
-  userProfile: unknown;
+  userProfile!: Auth0UserProfile;
   requestedScopes = 'openid profile read:timesheets create:timesheets';
 
   auth0 = new WebAuth({
@@ -42,6 +47,25 @@ export class AuthService {
         alert(`Error: ${err.error}. Check the console for further details.`);
       }
     });
+  }
+
+  public getProfile(callback: <T, U>(err: T, profile: U) => void): void {
+    const accessToken = localStorage.getItem(ACCESS_TOKEN);
+
+    if (!accessToken) {
+      throw new Error('Access Token must exist to fetch profile');
+    }
+
+    this.auth0.client.userInfo(
+      accessToken,
+      (err: Auth0Error | null, profile: Auth0UserProfile) => {
+        if (profile) {
+          this.userProfile = profile;
+        }
+
+        callback(err, profile);
+      }
+    );
   }
 
   public logout(): void {
