@@ -5,6 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './callback.component.html',
   styleUrls: ['./callback.component.scss'],
 })
-export class CallbackComponent {
-  constructor() {}
-}
+export class CallbackComponent {}

@@ -12,8 +12,8 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthService {
-  userProfile: any;
-  requestedScopes: string = 'openid profile read:timesheets create:timesheets';
+  userProfile: unknown;
+  requestedScopes = 'openid profile read:timesheets create:timesheets';
 
   auth0 = new WebAuth({
     clientID: AUTH_CONFIG.clientID,
@@ -44,24 +44,6 @@ export class AuthService {
     });
   }
 
-  private setSession(authResult: Auth0DecodedHash): void {
-    // Set the time that the Access Token will expire at
-    const expiresAt: string = JSON.stringify(
-      authResult.expiresIn! * 1000 + new Date().getTime()
-    );
-
-    // If there is a value on the scope param from the authResult,
-    // use it to set scopes in the session for the user. Otherwise
-    // use the scopes as requested. If no scopes were requested,
-    // set it to nothing
-    const scopes: string = authResult.scope || this.requestedScopes || '';
-
-    localStorage.setItem(ACCESS_TOKEN, authResult.accessToken!);
-    localStorage.setItem(ID_TOKEN, authResult.idToken!);
-    localStorage.setItem(EXPIRES_AT, expiresAt);
-    localStorage.setItem(SCOPES, JSON.stringify(scopes));
-  }
-
   public logout(): void {
     // Remove tokens and expiry time from localStorage
     localStorage.removeItem(ACCESS_TOKEN);
@@ -75,15 +57,35 @@ export class AuthService {
   public isAuthenticated(): boolean {
     // Check whether the current time is past the
     // Access Token's expiry time
-    const expiresAt: number = JSON.parse(localStorage.getItem(EXPIRES_AT)!);
+    const expiresAt: number = JSON.parse(
+      localStorage.getItem(EXPIRES_AT) as string
+    );
     return new Date().getTime() < expiresAt;
   }
 
   public userHasScopes(scopes: string[]): boolean {
     const grantedScopes: string[] = JSON.parse(
-      localStorage.getItem(SCOPES)!
+      localStorage.getItem(SCOPES) as string
     ).split(' ');
 
     return scopes.every(scope => grantedScopes.includes(scope));
+  }
+
+  private setSession(authResult: Auth0DecodedHash): void {
+    // Set the time that the Access Token will expire at
+    const expiresAt: string = JSON.stringify(
+      (authResult.expiresIn as number) * 1000 + new Date().getTime()
+    );
+
+    // If there is a value on the scope param from the authResult,
+    // use it to set scopes in the session for the user. Otherwise
+    // use the scopes as requested. If no scopes were requested,
+    // set it to nothing
+    const scopes: string = authResult.scope || this.requestedScopes || '';
+
+    localStorage.setItem(ACCESS_TOKEN, authResult.accessToken as string);
+    localStorage.setItem(ID_TOKEN, authResult.idToken as string);
+    localStorage.setItem(EXPIRES_AT, expiresAt);
+    localStorage.setItem(SCOPES, JSON.stringify(scopes));
   }
 }
