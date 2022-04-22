@@ -11,3 +11,8 @@ export const AUTH_CONFIG: AuthConfig = {
   callbackURL: 'http://localhost:4200/callback',
   apiUrl: 'https://timesheet-api/',
 };
+
+export const ACCESS_TOKEN = 'access_token';
+export const ID_TOKEN = 'id_token';
+export const EXPIRES_AT = 'expires_at';
+export const SCOPES = 'scopes';
