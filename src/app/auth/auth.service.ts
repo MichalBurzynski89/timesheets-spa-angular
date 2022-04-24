@@ -11,6 +11,7 @@ import {
   Auth0UserProfile,
   WebAuth,
 } from 'auth0-js';
+import { Observable, Subscription, mergeMap, of, timer } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -18,6 +19,7 @@ import { Router } from '@angular/router';
 @Injectable()
 export class AuthService {
   userProfile!: Auth0UserProfile;
+  refreshSubscription!: Subscription;
   requestedScopes = 'openid profile read:timesheets create:timesheets';
 
   auth0 = new WebAuth({
@@ -95,6 +97,53 @@ export class AuthService {
     return scopes.every(scope => grantedScopes.includes(scope));
   }
 
+  public renewToken(): void {
+    this.auth0.checkSession(
+      {
+        audience: AUTH_CONFIG.apiUrl,
+      },
+      (err: Auth0Error | null, result: Auth0DecodedHash) => {
+        if (!err) {
+          this.setSession(result);
+        }
+      }
+    );
+  }
+
+  public scheduleRenewal(): void {
+    if (!this.isAuthenticated()) {
+      return;
+    }
+
+    const expiresAt: number = JSON.parse(
+      localStorage.getItem('expires_at') as string
+    );
+
+    const source: Observable<0> = of(expiresAt).pipe(
+      mergeMap(expiresAt => {
+        const now = Date.now();
+
+        // Use the delay in a timer to
+        // run the refresh at the proper time
+        const refreshAt = expiresAt - 1000 * 30; // Refresh 30 seconds before expiry
+        return timer(Math.max(1, refreshAt - now));
+      })
+    );
+
+    // Once the delay time from above is
+    // reached, get a new JWT and schedule
+    // additional refreshes
+    this.refreshSubscription = source.subscribe(() => this.renewToken());
+  }
+
+  public unscheduleRenewal(): void {
+    if (!this.refreshSubscription) {
+      return;
+    }
+
+    this.refreshSubscription.unsubscribe();
+  }
+
   private setSession(authResult: Auth0DecodedHash): void {
     // Set the time that the Access Token will expire at
     const expiresAt: string = JSON.stringify(
@@ -111,5 +160,6 @@ export class AuthService {
     localStorage.setItem(ID_TOKEN, authResult.idToken as string);
     localStorage.setItem(EXPIRES_AT, expiresAt);
     localStorage.setItem(SCOPES, JSON.stringify(scopes));
+    this.scheduleRenewal();
   }
 }
