@@ -21,6 +21,14 @@ const routes: Routes = [
       import('./routes/callback/callback.module').then(m => m.CallbackModule),
   },
   {
+    path: 'timesheets',
+    loadChildren: () =>
+      import('./routes/timesheets/timesheets.module').then(
+        m => m.TimesheetsModule
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: '**',
     redirectTo: '',
   },
