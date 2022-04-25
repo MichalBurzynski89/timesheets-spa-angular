@@ -4,12 +4,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { AuthService } from './auth/auth.service';
 import { BrowserModule } from '@angular/platform-browser';
-import { CallbackComponent } from './routes/callback/callback.component';
 import { HomeComponent } from './routes/home/home.component';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NgModule } from '@angular/core';
-import { ProfileComponent } from './routes/profile/profile.component';
 import { ScopeGuard } from './auth/guards/scope.guard';
 import { TimesheetsService } from './services/timesheets.service';
 
@@ -18,12 +16,7 @@ export function tokenGetter(): string | null {
 }
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    CallbackComponent,
-    HomeComponent,
-    ProfileComponent,
-  ],
+  declarations: [AppComponent, HomeComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
