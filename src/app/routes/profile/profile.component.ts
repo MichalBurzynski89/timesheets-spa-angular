@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Auth0UserProfile } from 'auth0-js';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-profile',

@@ -1,13 +1,18 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CallbackComponent } from './callback/callback.component';
-import { ProfileComponent } from './profile/profile.component';
+import { AppRoutingModule } from './app-routing.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { CallbackComponent } from './routes/callback/callback.component';
+import { HomeComponent } from './routes/home/home.component';
+import { NgModule } from '@angular/core';
+import { ProfileComponent } from './routes/profile/profile.component';
 
 @NgModule({
-  declarations: [AppComponent, CallbackComponent, ProfileComponent],
+  declarations: [
+    AppComponent,
+    CallbackComponent,
+    HomeComponent,
+    ProfileComponent,
+  ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [],
   bootstrap: [AppComponent],
