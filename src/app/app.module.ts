@@ -1,10 +1,17 @@
+import { ACCESS_TOKEN } from './auth/auth0-variables';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { CallbackComponent } from './routes/callback/callback.component';
 import { HomeComponent } from './routes/home/home.component';
+import { HttpClientModule } from '@angular/common/http';
+import { JwtModule } from '@auth0/angular-jwt';
 import { NgModule } from '@angular/core';
 import { ProfileComponent } from './routes/profile/profile.component';
+
+export function tokenGetter(): string | null {
+  return localStorage.getItem(ACCESS_TOKEN);
+}
 
 @NgModule({
   declarations: [
@@ -13,7 +20,14 @@ import { ProfileComponent } from './routes/profile/profile.component';
     HomeComponent,
     ProfileComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: { tokenGetter, allowedDomains: ['localhost:8080'] },
+    }),
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

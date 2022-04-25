@@ -31,7 +31,7 @@ export class AuthService {
     scope: this.requestedScopes,
   });
 
-  constructor(public readonly router: Router) {}
+  constructor(private readonly router: Router) {}
 
   public login(): void {
     this.auth0.authorize();
