@@ -17,7 +17,7 @@ export class TimesheetAddComponent {
     private readonly timesheetsService: TimesheetsService
   ) {}
 
-  onSubmit() {
+  onSubmit(): void {
     this.timesheetsService.addTimesheet(this.model).subscribe({
       next: () => this.router.navigate(['/timesheets']),
       error: error => (this.error = error.statusText),

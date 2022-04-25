@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { HomeComponent } from './routes/home/home.component';
 import { NgModule } from '@angular/core';
+import { ScopeGuard } from './auth/guards/scope.guard';
 
 const routes: Routes = [
   {
@@ -27,6 +28,15 @@ const routes: Routes = [
         m => m.TimesheetsModule
       ),
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'approval',
+    loadChildren: () =>
+      import('./routes/approval/approval.module').then(m => m.ApprovalModule),
+    canActivate: [ScopeGuard],
+    data: {
+      expectedScopes: ['approve:timesheets'],
+    },
   },
   {
     path: '**',

@@ -14,7 +14,7 @@ export class TimesheetListComponent implements OnInit {
 
   constructor(private readonly timesheetsService: TimesheetsService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.timesheetsService.getAllTimesheets().subscribe({
       next: data => (this.timesheets = data),
       error: error => (this.error = error.statusText),
