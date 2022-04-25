@@ -26,7 +26,7 @@ export class AuthService {
     clientID: AUTH_CONFIG.clientID,
     domain: AUTH_CONFIG.domain,
     responseType: 'token id_token',
-    audience: AUTH_CONFIG.apiUrl,
+    audience: AUTH_CONFIG.audience,
     redirectUri: AUTH_CONFIG.callbackURL,
     scope: this.requestedScopes,
   });
@@ -100,7 +100,7 @@ export class AuthService {
   public renewToken(): void {
     this.auth0.checkSession(
       {
-        audience: AUTH_CONFIG.apiUrl,
+        audience: AUTH_CONFIG.audience,
       },
       (err: Auth0Error | null, result: Auth0DecodedHash) => {
         if (!err) {
