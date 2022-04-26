@@ -11,7 +11,7 @@ export const AUTH_CONFIG: AuthConfig = {
   domain: 'michal-burzynski.eu.auth0.com',
   callbackURL: 'http://localhost:4200/callback',
   audience: 'https://timesheet-api/',
-  apiUrl: 'http://localhost:8080',
+  apiUrl: 'http://localhost:8080/api',
 };
 
 export const ACCESS_TOKEN = 'access_token';
