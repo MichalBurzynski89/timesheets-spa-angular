@@ -9,4 +9,8 @@
   left: 0;
   right: 0;
   background-color: #fff;
+
+  & > img {
+    width: 25%;
+  }
 }
